@@ -39,7 +39,7 @@ class Post
 	**/
 	public function getTitle()
 	{
-		return $this->id;
+		return $this->title;
 	}
 
 	/**

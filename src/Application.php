@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Psr\Http\Message\ServerRequestInterface;
 use just\Plugins\PluginInterface;
+use Doctrine\ORM\NoResultException;
 
 class Application
 {
@@ -50,6 +51,16 @@ class Application
 	    return $this;
 	}
 
+    public function getAll($path, $action)
+    {
+        $routing = $this->service('routing');
+        $routing->tokens([
+            'path' => '(\/\S+)*'
+        ]);
+        $routing->get('catchall', $path, $action);
+        return $this;
+    }
+
     public function post($path, $action, $name = null)
     {
         $routing = $this->service('routing');
@@ -85,9 +96,15 @@ class Application
         foreach ($route->attributes as $key => $value){
             $request = $request->withAttribute($key,$value);
         }
-
-        $callable = $route->handler;
-        $response = $callable($request);
+        try {
+            $callable = $route->handler;
+            $response = $callable($request);
+        } catch (\InvalidArgumentException $e) {
+            echo $e->getMessage();
+            die;
+        } catch (NoResultException $e) {
+            echo $e->getMessage();
+        }
 
         $this->emitResponse($response);
 	}
