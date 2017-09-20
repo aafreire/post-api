@@ -20,7 +20,8 @@ $dbParams = [
     'driver'   => $config['development']['doctrine_driver'],
     'user'     => $config['development']['username'],
     'password' => $config['development']['password'],
-    'dbname'   => $config['development']['database']
+    'dbname'   => $config['development']['database'],
+    'host'	   => $config['development']['host']
 ];
 
 $doctrine_config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);

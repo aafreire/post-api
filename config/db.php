@@ -3,7 +3,7 @@
 return [
 	'development' => [
 		'driver'    => 'mysql',
-		'host'      => 'localhost',
+		'host'      => 'db',
 		'database'  => 'just',
 		'username'  => 'root',
 		'password'  => 'root',
