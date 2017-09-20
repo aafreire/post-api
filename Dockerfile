@@ -10,13 +10,13 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
-RUN composer install --no-interaction
+RUN curl -sS https://getcomposer.org/installer | php
+RUN php composer.phar require behat/behat
 
 COPY postapi.dev.conf /etc/apache2/sites-available/postapi.dev.conf
 
 RUN a2ensite postapi.dev.conf
 RUN a2enmod rewrite
-RUN service apache2 reload
 
 EXPOSE 80
 EXPOSE 443

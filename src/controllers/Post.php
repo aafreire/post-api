@@ -8,7 +8,6 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Manager;
 
 $app
-
     ->get('/post', function() use($app, $entityManager){
         $posts = $entityManager->getRepository('just\Models\Post')->findAll();
 
