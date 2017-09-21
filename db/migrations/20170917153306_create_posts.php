@@ -11,6 +11,7 @@ class CreatePosts extends AbstractMigration
             ->addColumn('title', 'string')
             ->addColumn('body', 'string')
             ->addColumn('path', 'string')
+            ->addIndex(['path'], ['unique' => true])
         ->save();
     }
 

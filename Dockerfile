@@ -10,8 +10,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN php composer.phar require behat/behat
 
 COPY postapi.dev.conf /etc/apache2/sites-available/postapi.dev.conf
 

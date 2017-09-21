@@ -13,10 +13,7 @@
         "zendframework/zend-diactoros": "1.3.10",
         "doctrine/orm": "2.5.9",
         "league/fractal": "^0.17.0",
-        "behat/behat": "~2.5"
-    },
-    "config": {
-        "bin-dir": "bin/"
+        "lcobucci/jwt": "3.2"
     },
     "autoload": {
         "psr-4": {

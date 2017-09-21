@@ -6,6 +6,7 @@ use just\Transformer\PostTransformer;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Manager;
+use Doctrine\ORM\NoResultException;
 
 $app
     ->get('/post', function() use($app, $entityManager){
@@ -23,6 +24,11 @@ $app
         $id = $request->getAttribute('id');
 
         $post = $entityManager->getRepository('just\Models\Post')->find($id);
+
+        if (empty($post)){
+            throw new NoResultException;
+        }
+
         $fractal = new Manager();
         $resource = new Item($post, new PostTransformer);
 
@@ -36,12 +42,20 @@ $app
 
         $post = new Post();
 
+        if (!preg_match('%^/(?!.*\/$)(?!.*[\/]{2,})(?!.*\?.*\?)(?!.*\.\/).*%im', $data->path)) {
+            throw new \InvalidArgumentException("invalide path");
+        }
+
         $post->setTitle($data->title);
         $post->setBody($data->body);
         $post->setPath($data->path);
 
-        $entityManager->persist($post);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($post);
+            $entityManager->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            echo "string";die;
+        }
 
         $fractal = new Manager();
         $resource = new Item($post, new PostTransformer);

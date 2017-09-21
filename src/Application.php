@@ -8,6 +8,9 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Psr\Http\Message\ServerRequestInterface;
 use just\Plugins\PluginInterface;
 use Doctrine\ORM\NoResultException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\ValidationData;
 
 class Application
 {
@@ -82,20 +85,44 @@ class Application
         return $this;
     }
 
-	public function start()
-	{
-	    $route = $this->service('route');
+    private function authenticate()
+    {
+        try {
+            $token = (new Parser())->parse(apache_request_headers()['Authorization']);
+        } catch (\Exception $e) {
+            echo "Invalid Token";
+            die;
+        }
+
+        $validationData = new ValidationData();
+        $validationData->setIssuer('Post API');
+        $validationData->setAudience('Post API');
+
+        if (!$token->validate($validationData)) {
+            echo "Invalid Token";
+            die;
+        }
+    }
+
+    public function start()
+    {
+        $route = $this->service('route');
         /** @var ServerRequestInterface $request */
         $request = $this->service(RequestInterface::class);
 
+        if ($request->getUri()->getPath() != "/login") {
+            $this->authenticate();
+        }
+
         if(!$route){
             echo "Page not found";
-            exit;
+            die;
         }
 
         foreach ($route->attributes as $key => $value){
             $request = $request->withAttribute($key,$value);
         }
+
         try {
             $callable = $route->handler;
             $response = $callable($request);
@@ -103,7 +130,11 @@ class Application
             echo $e->getMessage();
             die;
         } catch (NoResultException $e) {
-            echo $e->getMessage();
+            echo "not found";
+            die;
+        } catch (UniqueConstraintViolationException $e) {
+            echo "duplicated entry";
+            die;
         }
 
         $this->emitResponse($response);

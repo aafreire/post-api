@@ -32,6 +32,7 @@ $app = new Application($serviceContainer);
 
 $app->plugin(new RoutePlugin());
 
+require_once __DIR__ . '/../src/controllers/User.php';
 require_once __DIR__ . '/../src/controllers/Post.php';
 
 $app->start();
