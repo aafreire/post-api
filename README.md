@@ -25,7 +25,7 @@ $ composer install
 
 Conectado na maquina do Docker e na pasta do projeto
 ```
-$ vendor/bin/phinx migration
+$ vendor/bin/phinx migrate
 ```
 
 ## Utilizando a Api
